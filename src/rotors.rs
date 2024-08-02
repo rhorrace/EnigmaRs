@@ -1,5 +1,5 @@
-#[derive(Copy, Clone)]
-enum Options {
+#[derive(Clone, Copy)]
+pub enum Options {
   I,
   II,
   III,
@@ -30,17 +30,34 @@ impl Rotors {
     }
   }
 
-  pub fn signal_right_to_left(&self, value: usize) -> usize {
-    self.outputs.iter()
-      .enumerate()
-      .rev()
-      .fold(value, |acc, (i, x)| x[(self.offsets[i + acc]) % 26])
+  pub fn signal_right_to_left(&mut self, value: usize) -> usize {
+    self.rotate();
+
+    println!("{:?}", self.offsets);
+
+    let mut current = value;
+
+    for (rotor, &offset) in self.outputs.iter().zip(self.offsets.iter()).rev() {
+        current = rotor[(current + offset) % 26];
+    }
+
+    current
   }
 
   pub fn signal_left_to_right(&self, value: usize) -> usize {
-    self.outputs.iter()
-      .enumerate()
-      .fold(value, |acc, (i, x)| x[(self.offsets[i + acc]) % 26])
+    let mut current = value;
+
+    for (i, &x) in self.outputs.iter().zip(self.offsets.iter()) {
+      // Find the position directly
+      let temp = i.iter()
+        .position(|&v| v == current)
+        .unwrap_or(0);
+
+      // Calculate new value and ensure it's within the range [0, 25]
+      current = (temp + 26 - x) % 26;
+    }
+
+    current
   }
 
   pub fn set_rotors(&mut self, selection: &[Options]) {
@@ -54,7 +71,7 @@ impl Rotors {
 
   pub fn set_offsets(&mut self, offsets: &[usize]) {
     for &offset in offsets {
-      self.offsets.push(((offset - 1) % 26 + 26) % 26);
+      self.offsets.push(offset % 26);
     }
   }
 

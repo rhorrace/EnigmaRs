@@ -8,8 +8,6 @@ pub enum Options {
   VI,
   VII,
   VIII,
-  Beta,
-  Gamma,
 }
 
 #[derive(Clone)]
@@ -77,9 +75,10 @@ impl Rotors {
 
   fn rotate(&mut self) {
     for i in (0..self.offsets.len()).rev() {
-      let  rotate_next = self.notches[i].contains(&self.offsets[i]);
 
       self.offsets[i] = (self.offsets[i] + 1) % 26;
+
+      let  rotate_next = self.notches[i].contains(&self.offsets[i]);
 
       if !rotate_next {
         return;
@@ -105,10 +104,6 @@ impl Rotors {
       Options::VII => [3, 25, 9, 7, 6, 17, 2, 23, 12, 24, 18, 22, 1, 14, 20, 5, 0, 8, 21, 11, 15, 4, 10, 16, 3, 19],
       // F K Q H T L X O C B J S P D Z R A M E W N I U Y G V
       Options::VIII => [5, 10, 16, 7, 19, 11, 23, 14, 2, 1, 9, 18, 15, 3, 25, 17, 0, 12, 4, 22, 13, 8, 20, 24, 6, 21],
-      // L E Y J V C N I X W P B Q M D R T A K Z G F U H O S
-      Options::Beta => [11, 4, 24, 9, 21, 2, 13, 8, 23, 22, 15, 1, 16, 12, 3, 17, 19, 0, 10, 25, 6, 5, 20, 7, 14, 18],
-      // F S O K A N U E R H M B T I Y C W L Q P Z X V G J D
-      Options::Gamma => [5, 18, 14, 10, 0, 13, 20, 4, 17, 7, 12, 1, 19, 8, 24, 2, 22, 11, 16, 15, 25, 23, 21, 6, 9, 3]
     }
   }
 
@@ -126,8 +121,6 @@ impl Rotors {
       Options::V => vec![0],
       // A, N
       Options::VI | Options::VII | Options::VIII => vec![0, 13],
-      // No notch
-      _ => vec![]
     }
   }
 }

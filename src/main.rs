@@ -15,7 +15,7 @@ fn main() {
 
     machine.set_offsets(&[0,0,0]);
 
-    let string: String = "A".to_string();
+    let string: String = "AAAA".to_string();
 
     let string2: String = string.chars()
       .map(|c| {

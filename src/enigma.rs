@@ -45,8 +45,6 @@ impl Enigma {
   pub fn process(&mut self, mut value: usize) -> usize {
     self.rotate();
 
-    println!("{:?}", self.rotor_offsets);
-
     value = self.through_plugboard(value);
     value = self.rotor_right_to_left(value);
     value = self.through_reflector(value);
@@ -60,11 +58,7 @@ impl Enigma {
     let mut current = value;
 
     for (rotor, &offset) in self.rotors.iter().zip(self.rotor_offsets.iter()).rev() {
-      print!("{current}");
-
-      current = rotor[(current + offset) % 26];
-
-      println!(" : {current}");
+      current = (rotor[current] + offset) % 26;
     }
 
     current
@@ -74,32 +68,23 @@ impl Enigma {
     let mut current = value;
 
     for (i, &x) in self.rotors.iter().zip(self.rotor_offsets.iter()) {
-      // Find the position directly
-      let temp = i.iter()
-        .position(|&v| v == current)
+      // Calculate position
+      let temp = (current + 26 - x) % 26;
+
+      // Find position
+      current = i.iter()
+        .position(|&v| v == temp)
         .unwrap_or(0);
-
-      print!("{current}");
-
-      // Calculate new value and ensure it's within the range [0, 25]
-      current = (temp + 26 - x) % 26;
-
-      println!(" : {current}");
     }
 
     current
   }
 
   pub fn through_plugboard(&self, value: usize) -> usize {
-
-    println!("{} : {}", value, self.plugboard[value]);
-
     self.plugboard[value]
   }
 
   pub fn through_reflector(&self, value: usize) -> usize {
-    println!("{} : {}", value, self.reflector[value]);
-
     self.reflector[value]
   }
 
